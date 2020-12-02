@@ -5,7 +5,8 @@ Input: Live Tweets when someone hashtags or @'s our bot
 
 Output: Twitter reply 
 
+INFO: JSON file on git. Put this in your ibm cloud account. Python file to run on google drive colab
 
 Diagnosu twitter:
-user: 
+user: @DiagnOSU
 password: ask trevor
