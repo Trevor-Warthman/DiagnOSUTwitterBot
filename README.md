@@ -20,6 +20,8 @@ Diagnosu twitter:
 user: @DiagnOSU
 password: ask trevor (440-787-5778)
 
+DiagnOSU drive:
+https://drive.google.com/drive/folders/1F5GjTh-D3fAOcBPae1Q8_VQtCETuoE-r?ths=true
 
 Features to Add: 
 Make DiagnOSU only reply to tweets that he hasn't replied to before using the Twitter API
