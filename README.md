@@ -23,6 +23,9 @@ password: ask trevor (440-787-5778)
 DiagnOSU drive:
 https://drive.google.com/drive/folders/1F5GjTh-D3fAOcBPae1Q8_VQtCETuoE-r?ths=true
 
+DiagnOSU Python Notebook to run twitter bot:
+https://colab.research.google.com/drive/1vJg_1xfN6U61BJFPU4P7dm-q2-ByZ3Ob
+
 Features to Add: 
 Make DiagnOSU only reply to tweets that he hasn't replied to before using the Twitter API
 Allow tweets to contain a tab or new line.
