@@ -9,4 +9,4 @@ INFO: JSON file on git. Put this in your ibm cloud account. Python file to run o
 
 Diagnosu twitter:
 user: @DiagnOSU
-password: ask trevor
+password: ask trevor (440-787-5778)
