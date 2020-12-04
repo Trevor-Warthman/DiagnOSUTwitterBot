@@ -1,6 +1,30 @@
 {
   "intents": [
     {
+      "intent": "ContactWithCovid",
+      "examples": [
+        {
+          "text": "Everyone in my family has covid"
+        },
+        {
+          "text": "I have been in contact with someone who has coronavirus"
+        },
+        {
+          "text": "I hung out with my friend who has coronavirus"
+        },
+        {
+          "text": "I went to a party and everyone got covid"
+        },
+        {
+          "text": "my mom has corona"
+        },
+        {
+          "text": "my mom has covid"
+        }
+      ],
+      "description": ""
+    },
+    {
       "intent": "EndOfStream",
       "examples": [
         {
@@ -902,88 +926,6 @@
         }
       ],
       "fuzzy_match": true
-    },
-    {
-      "entity": "peopleCloseToYou",
-      "values": [
-        {
-          "type": "synonyms",
-          "value": "aunt",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "brother",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "classmate",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "dad",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "daughter",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "family",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "friend",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "grandparent",
-          "synonyms": [
-            "gramps",
-            "grandad",
-            "grandfather",
-            "grandma",
-            "grandmother",
-            "granny",
-            "mama",
-            "mayma",
-            "mema",
-            "papa"
-          ]
-        },
-        {
-          "type": "synonyms",
-          "value": "mom",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "roommate",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "sister",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "son",
-          "synonyms": []
-        },
-        {
-          "type": "synonyms",
-          "value": "uncle",
-          "synonyms": []
-        }
-      ],
-      "fuzzy_match": true
     }
   ],
   "metadata": {
@@ -994,6 +936,73 @@
     "from-sample": true
   },
   "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Some Contact with COVID patient",
+      "parent": "node_8_1606256963746",
+      "conditions": "$contactCounter == 1",
+      "dialog_node": "node_10_1606876251091",
+      "previous_sibling": "node_4_1606257526035"
+    },
+    {
+      "type": "standard",
+      "title": "No Symptoms and no contact",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Nothing in your tweet gave us an indication that you might currently have COVID-19. Even so, it is important to social distance, remember to wear a mask, and remember to come back to let me know if any symptoms develop."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_4_1600810824990",
+      "conditions": "$covidCounter == 0 && $contactCounter == 0",
+      "dialog_node": "node_1_1602614974974",
+      "previous_sibling": "node_6_1606256693845"
+    },
+    {
+      "type": "standard",
+      "title": "Count",
+      "output": {
+        "generic": []
+      },
+      "next_step": {
+        "behavior": "skip_user_input"
+      },
+      "conditions": "#medical_symptoms_intents || #ContactWithCovid",
+      "digress_in": "does_not_return",
+      "dialog_node": "node_1_1602729687154",
+      "previous_sibling": "node_3_1602785014899"
+    },
+    {
+      "type": "standard",
+      "title": "Non COVID-19 symptoms",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Entity"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_1_1602729687154",
+      "context": {
+        "nonCovidCounter": "<? $nonCovidCounter + 1 ?>"
+      },
+      "conditions": "true || @nonCovidSymptom",
+      "dialog_node": "node_1_1602729744547",
+      "previous_sibling": "node_3_1604782618785"
+    },
     {
       "type": "standard",
       "title": "Irrelevant Input",
@@ -1010,117 +1019,30 @@
           }
         ]
       },
-      "parent": "node_1_1602729687154",
       "context": {
         "invalidCounter": "<? $invalidCounter + 1 ?>"
       },
       "conditions": "anything_else",
-      "dialog_node": "node_10_1603043184781",
-      "previous_sibling": "node_6_1605830661010"
-    },
-    {
-      "type": "standard",
-      "title": "Definitely covid with mental health ",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "It is extremely likely that you have contracted COVID-19, and in any case you are in need of medical treatment. Call your doctor immediately, distance from friends and family, and do not engage in contact with others for any reason. You've also listed signs of mental health issues. Mental health is a serious and common problem, especially during the isolation of the pandemic. Please reach out to your doctor immediately to set up an online appointment with a mental health specialist. If you experience a mental health emergency, call 1-800-273-8255."
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_8_1606256963746",
-      "conditions": "$covidCounter >= 4 && $mentalHealthCounter > 0",
-      "dialog_node": "node_10_1606257264781"
-    },
-    {
-      "type": "standard",
-      "title": "No Symptoms but not invalid message",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "Nothing in your tweet gave us an indication that you might currently have COVID-19. Even so, it is important to social distance, remember to wear a mask, and remember to come back to let me know if any symptoms develop."
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_4_1600810824990",
-      "conditions": "$covidCounter == 0 && $contactCounter == 0 && $nonCovidCounter > 2",
-      "dialog_node": "node_1_1602614974974",
-      "previous_sibling": "node_6_1606256693845"
-    },
-    {
-      "type": "standard",
-      "title": "Count",
-      "output": {
-        "generic": [
-          {
-            "values": [],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "next_step": {
-        "behavior": "skip_user_input"
-      },
-      "conditions": "#medical_symptoms_intents",
-      "digress_in": "does_not_return",
-      "dialog_node": "node_1_1602729687154",
-      "previous_sibling": "node_3_1602785014899"
-    },
-    {
-      "type": "standard",
-      "title": "Non COVID-19 symptoms",
-      "output": {
-        "generic": []
-      },
-      "parent": "node_6_1605830661010",
-      "context": {
-        "nonCovidCounter": "<? $nonCovidCounter + 1 ?>"
-      },
-      "conditions": "true || @nonCovidSymptom",
-      "dialog_node": "node_1_1602729744547",
-      "previous_sibling": "node_3_1604782618785"
-    },
-    {
-      "type": "standard",
-      "title": "Not sure, but be careful",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "It is somewhat likely that you have contacted COVID-19 and are experiencing minimal symptoms. Please make sure to social distance and be very careful until you can take a test. "
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_8_1606256963746",
-      "conditions": "$covidCounter > 0 && $contactCounter ==1 and $covidCounter < 2",
-      "dialog_node": "node_1_1606255270861",
-      "previous_sibling": "node_3_1606255163369"
+      "dialog_node": "node_1_1606873093178",
+      "previous_sibling": "node_4_1600810824990"
     },
     {
       "type": "standard",
       "title": "Contact with COVID Patient",
       "output": {
-        "generic": []
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Entity"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
       },
-      "parent": "node_6_1605830661010",
+      "parent": "node_1_1602729687154",
       "context": {
         "contactCounter": "<? $contactCounter + 1 ?>"
       },
@@ -1153,77 +1075,25 @@
       "type": "standard",
       "title": "Mental Health Symptoms",
       "output": {
-        "generic": []
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Entity"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
       },
-      "parent": "node_6_1605830661010",
+      "parent": "node_1_1602729687154",
       "context": {
         "mentalHealthCounter": "<? $mentalHealthCounter + 1 ?>"
       },
       "conditions": "@mentalHealthSymptom",
       "dialog_node": "node_3_1604782618785",
       "previous_sibling": "node_4_1602729865071"
-    },
-    {
-      "type": "standard",
-      "title": "Fully Mental Health",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "Though I don't see signs of COVID-19 symptoms, I see you are experiencing mental health issues. Please reach out to ____ and ___ resources."
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_4_1600810824990",
-      "conditions": "$mentalHealthCounter && $covidCounter == 0 && $nonCovidCounter == 0 && $contactCounter == 0",
-      "dialog_node": "node_3_1605828900394"
-    },
-    {
-      "type": "standard",
-      "title": "Some Covid symptoms",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "You're displaying a few symptoms of COVID-19. It is very important to self-isolate, and it would be good to get a test as soon as possible. "
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_8_1606256963746",
-      "conditions": "$covidCounter < 4 && $contactCounter == 0",
-      "dialog_node": "node_3_1606255163369",
-      "previous_sibling": "node_4_1606257526035"
-    },
-    {
-      "type": "standard",
-      "title": "Not sure be careful with mental health",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "It is somewhat likely that you have contacted COVID-19 and are experiencing minimal symptoms. Please make sure to social distance and be very careful until you can take a test. You've also listed signs of mental health issues. Mental health is a serious and common problem, especially during the isolation of the pandemic. Please reach out to your doctor immediately to set up an online appointment with a mental health specialist. If you experience a mental health emergency, call 1-800-273-8255."
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_8_1606256963746",
-      "conditions": "$covidCounter > 0 && contactCounter == 1 && $mentalHealthCounter > 0",
-      "dialog_node": "node_3_1606258787949",
-      "previous_sibling": "node_1_1606255270861"
     },
     {
       "type": "standard",
@@ -1243,9 +1113,19 @@
       "type": "standard",
       "title": "COVID-19 symptoms",
       "output": {
-        "generic": []
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Entity"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
       },
-      "parent": "node_6_1605830661010",
+      "parent": "node_1_1602729687154",
       "context": {
         "covidCounter": "<? $covidCounter + 1 ?>"
       },
@@ -1254,13 +1134,13 @@
     },
     {
       "type": "standard",
-      "title": "Some covid symptoms with mental health",
+      "title": "Some covid symptoms",
       "output": {
         "generic": [
           {
             "values": [
               {
-                "text": "You're displaying a few symptoms of COVID-19. It is very important to self-isolate, and it would be good to get a test as soon as possible. You've also listed signs of mental health issues. Mental health is a serious and common problem, especially during the isolation of the pandemic. Please reach out to your doctor immediately to set up an online appointment with a mental health specialist. If you experience a mental health emergency, call 1-800-273-8255."
+                "text": "You're displaying a few symptoms of COVID-19."
               }
             ],
             "response_type": "text",
@@ -1269,22 +1149,9 @@
         ]
       },
       "parent": "node_8_1606256963746",
-      "conditions": "$covidCounter < 4 && $covidCounter >0 && $mentalHealthCounter > 0",
+      "conditions": "$covidCounter < 4 && $covidCounter >0",
       "dialog_node": "node_4_1606257526035",
       "previous_sibling": "node_7_1606255801760"
-    },
-    {
-      "type": "standard",
-      "title": "isEntity",
-      "output": {
-        "generic": []
-      },
-      "parent": "node_1_1602729687154",
-      "next_step": {
-        "behavior": "skip_user_input"
-      },
-      "conditions": "@CoronavirusSymptom || @mentalHealthSymptom || @nonCovidSymptom || @contactWithCovid",
-      "dialog_node": "node_6_1605830661010"
     },
     {
       "type": "standard",
@@ -1305,7 +1172,27 @@
       "parent": "node_4_1600810824990",
       "conditions": "$invalidCounter > 10 && $covidCounter < 2 && $contactCounter < 2",
       "dialog_node": "node_6_1606256693845",
-      "previous_sibling": "node_3_1605828900394"
+      "previous_sibling": "node_6_1606876473392"
+    },
+    {
+      "type": "standard",
+      "title": "Mental health problems",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Mental health is a serious and common problem, especially during the isolation of the pandemic. Please reach out to your doctor immediately to set up an online appointment with a mental health specialist. If you experience a mental health emergency, call 1-800-273-8255."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_4_1600810824990",
+      "conditions": "$mentalHealthCounter > 0",
+      "dialog_node": "node_6_1606876473392"
     },
     {
       "type": "standard",
@@ -1324,35 +1211,16 @@
         ]
       },
       "parent": "node_8_1606256963746",
-      "conditions": "$covidCounter >= 4",
-      "dialog_node": "node_7_1606255801760",
-      "previous_sibling": "node_10_1606257264781"
-    },
-    {
-      "type": "standard",
-      "title": "Invalid message because nothing else worked",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "Your message wasn't able to be processed, try rephrasing!"
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_4_1600810824990",
-      "conditions": "true",
-      "dialog_node": "node_7_1606256900201",
-      "previous_sibling": "node_8_1606256963746"
+      "conditions": "$covidCounter >= 4 || $contactCounter > 1",
+      "dialog_node": "node_7_1606255801760"
     },
     {
       "type": "standard",
       "title": "Will make a diagnosis",
       "parent": "node_4_1600810824990",
+      "next_step": {
+        "behavior": "skip_user_input"
+      },
       "conditions": "$covidCounter > 0 || $contactCounter > 0",
       "dialog_node": "node_8_1606256963746",
       "previous_sibling": "node_1_1602614974974"
